@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -90,8 +91,20 @@ func generateReport(config ReportConfig, execFunc ExecFunc) (FinalReport, string
 
 	md.WriteString(fmt.Sprintf("# %s\n\nGenerated on: %s\n\n---\n\n", config.Title, now.Format("2006-01-02 15:04:05")))
 
+	osName := runtime.GOOS
+	if osName == "darwin" {
+		osName = "mac"
+	}
+
+	username := os.Getenv("USER")
+	if username == "" {
+		username = os.Getenv("USERNAME")
+	}
+
 	finalReport := FinalReport{
-		Username:   os.Getenv("USER"),
+		Username:   username,
+		OS:         osName,
+		Arch:       runtime.GOARCH,
 		Assertions: make(map[string]AssertionReport),
 	}
 	finalReport.Timestamps.Start = now.Format(time.RFC3339)
