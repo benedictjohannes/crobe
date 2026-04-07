@@ -1,7 +1,6 @@
 package main
 
 import (
-	"compliance-probe/executor"
 	"compliance-probe/internal/configsource"
 	"compliance-probe/internal/reportwriter"
 	"compliance-probe/playbook"
@@ -32,7 +31,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	result := report.GenerateReport(*config, executor.RunExec)
+	result := report.GenerateReport(*config)
 	if err := reportwriter.DispatchReport(config, result); err != nil {
 		fmt.Printf("❌ Reporting Error: %v\n", err)
 		os.Exit(1)

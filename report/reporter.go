@@ -12,6 +12,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var runExec executor.RunExecer
+
+func init() {
+	runExec = executor.RunExec
+}
+
 type Assertion struct {
 	Timestamps struct {
 		Start string `json:"start"`
@@ -46,7 +52,7 @@ type FinalResult struct {
 	Markdown   string
 }
 
-func GenerateReport(config playbook.ReportConfig, execFunc executor.ExecFunc) FinalResult {
+func GenerateReport(config playbook.ReportConfig) FinalResult {
 	now := time.Now()
 	var md strings.Builder
 	var log strings.Builder
@@ -108,7 +114,7 @@ func GenerateReport(config playbook.ReportConfig, execFunc executor.ExecFunc) Fi
 
 			// 1. Pre-Commands
 			for _, exec := range assertion.PreCmds {
-				if _, err := execFunc(&exec, context); err != nil {
+				if _, err := runExec(&exec, context); err != nil {
 					fmt.Printf("      ⚠️ PreCmd Error (%s): %v\n", assertion.Code, err)
 				}
 			}
@@ -116,7 +122,7 @@ func GenerateReport(config playbook.ReportConfig, execFunc executor.ExecFunc) Fi
 			// 2. Main Commands
 			var outputs []string
 			for _, cmd := range assertion.Cmds {
-				res, err := execFunc(&cmd.Exec, context)
+				res, err := runExec(&cmd.Exec, context)
 				logExecution(&log, cmd.Exec, res, err)
 
 				if err != nil {
@@ -187,7 +193,7 @@ func GenerateReport(config playbook.ReportConfig, execFunc executor.ExecFunc) Fi
 
 			// 3. Post-Commands
 			for _, exec := range assertion.PostCmds {
-				if _, err := execFunc(&exec, context); err != nil {
+				if _, err := runExec(&exec, context); err != nil {
 					fmt.Printf("      ⚠️ PostCmd Error (%s): %v\n", assertion.Code, err)
 				}
 			}

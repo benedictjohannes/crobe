@@ -47,7 +47,8 @@ func TestReporterScoring(t *testing.T) {
 		}
 		return executor.ExecutionResult{ExitCode: 1, Success: false, Stdout: "fail"}, nil
 	}
-	res := GenerateReport(config, mockExec)
+	runExec = mockExec
+	res := GenerateReport(config)
 	report := res.Structured
 
 	// Score: 1 (cmd1 pass) + -1 (cmd2 fail default) = 0
@@ -65,7 +66,8 @@ func TestReporterScoring(t *testing.T) {
 	mockExecPass := func(e *playbook.Exec, context map[string]interface{}) (executor.ExecutionResult, error) {
 		return executor.ExecutionResult{ExitCode: 0, Success: true}, nil
 	}
-	res2 := GenerateReport(config, mockExecPass)
+	runExec = mockExecPass
+	res2 := GenerateReport(config)
 	report2 := res2.Structured
 	if !report2.Assertions["TEST_01"].Passed {
 		t.Errorf("Assertion failed with score %d; expected pass (min 2)", report2.Assertions["TEST_01"].Score)
@@ -118,7 +120,8 @@ func TestExcludeFromReport(t *testing.T) {
 		return res, nil
 	}
 
-	res := GenerateReport(config, mockExec)
+	runExec = mockExec
+	res := GenerateReport(config)
 	report := res.Structured
 	md := res.Markdown
 	logStr := res.Log
@@ -188,7 +191,8 @@ func TestGenerateReport_Advanced(t *testing.T) {
 		return executor.ExecutionResult{ExitCode: 0, Success: true}, nil
 	}
 
-	res := GenerateReport(config, mockExec)
+	runExec = mockExec
+	res := GenerateReport(config)
 	report := res.Structured
 	md := res.Markdown
 
@@ -243,7 +247,8 @@ func TestGenerateReport_ErrorCases(t *testing.T) {
 		return executor.ExecutionResult{Success: true}, nil
 	}
 
-	res := GenerateReport(config, mockExec)
+	runExec = mockExec
+	res := GenerateReport(config)
 	report := res.Structured
 	ass := report.Assertions["ERR_01"]
 	// Main fail will have FailScore (-1 default)
@@ -277,7 +282,8 @@ func TestGenerateReport_EnvUsage(t *testing.T) {
 		return executor.ExecutionResult{Stdout: "ok", Stderr: "some error"}, nil
 	}
 
-	res := GenerateReport(config, mockExec)
+	runExec = mockExec
+	res := GenerateReport(config)
 	report := res.Structured
 	if report.Username != "testuser" {
 		t.Errorf("Username = %s; want testuser", report.Username)
@@ -314,7 +320,8 @@ func TestGenerateReport_DefaultExitCode(t *testing.T) {
 		return executor.ExecutionResult{ExitCode: 1, Success: false}, nil
 	}
 
-	res := GenerateReport(config, mockExec)
+	runExec = mockExec
+	res := GenerateReport(config)
 	report := res.Structured
 	if !report.Assertions["E_PASS"].Passed {
 		t.Errorf("E_PASS should have passed")

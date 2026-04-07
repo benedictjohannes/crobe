@@ -16,7 +16,7 @@ import (
 	"github.com/dop251/goja"
 )
 
-type ExecFunc func(e *playbook.Exec, context map[string]interface{}) (ExecutionResult, error)
+type RunExecer func(e *playbook.Exec, context map[string]interface{}) (ExecutionResult, error)
 
 type ExecutionResult struct {
 	Stdout   string
