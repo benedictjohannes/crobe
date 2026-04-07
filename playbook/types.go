@@ -87,14 +87,37 @@ type ExitCodeRule struct {
 	Result int  `yaml:"result" json:"result" jsonschema:"description=Score result (-1\\, 0\\, 1)"`
 }
 
+type ReportDestination string
+
+const (
+	ReportDestinationFolder ReportDestination = "folder"
+	ReportDestinationHTTPS  ReportDestination = "https"
+)
+
 type Section struct {
 	Title       string      `yaml:"title" json:"title" jsonschema:"description=Title of the section,minLength=3"`
 	Description []string    `yaml:"description" json:"description" jsonschema:"description=List of descriptions for the section,minItems=1"`
 	Assertions  []Assertion `yaml:"assertions" json:"assertions" jsonschema:"description=List of assertions within this section,minItems=1"`
 }
 
+type ReportFormat string
+
+const (
+	ReportFormatMultipart ReportFormat = "multipart"
+	ReportFormatJSON      ReportFormat = "json"
+)
+
+type ReportDestinationConfig struct {
+	URL               string            `yaml:"url" json:"url" jsonschema:"description=URL to post report content to"`
+	Format            ReportFormat      `yaml:"format,omitempty" json:"format,omitempty" jsonschema:"description=Format of the report (json|multipart),default=multipart,enum=multipart,enum=json"`
+	SignatureSecret   string            `yaml:"signatureSecret,omitempty" json:"signatureSecret,omitempty" jsonschema:"description=Secret for HMAC-SHA256 signature"`
+	AdditionalHeaders map[string]string `yaml:"additionalHeaders,omitempty" json:"additionalHeaders,omitempty" jsonschema:"description=Custom headers for the request"`
+}
+
 type ReportConfig struct {
-	Title             string                 `yaml:"title" json:"title" jsonschema:"description=Title of the report,minLength=3"`
-	ReportFrontmatter map[string]interface{} `yaml:"reportFrontmatter,omitempty" json:"reportFrontmatter,omitempty" jsonschema:"description=Custom YAML frontmatter for markdown reports"`
-	Sections          []Section              `yaml:"sections" json:"sections" jsonschema:"description=List of sections in the report,minItems=1"`
+	Title                  string                   `yaml:"title" json:"title" jsonschema:"description=Title of the report,minLength=3"`
+	ReportFrontmatter      map[string]interface{}   `yaml:"reportFrontmatter,omitempty" json:"reportFrontmatter,omitempty" jsonschema:"description=Custom YAML frontmatter for markdown reports"`
+	Sections               []Section                `yaml:"sections" json:"sections" jsonschema:"description=List of sections in the report,minItems=1"`
+	ReportDestination      ReportDestination        `yaml:"reportDestination,omitempty" json:"reportDestination,omitempty" jsonschema:"description=Destination for the report,default=folder,enum=folder,enum=https"`
+	ReportDestinationHTTPS *ReportDestinationConfig `yaml:"reportDestinationHttps,omitempty" json:"reportDestinationHttps,omitempty" jsonschema:"description=Configuration for HTTPS report destination"`
 }

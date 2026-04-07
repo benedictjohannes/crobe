@@ -16,6 +16,7 @@ Whether you are auditing a desktop for security standards or monitoring server h
     -   **Detailed Logs**: Full execution trace for debugging.
 -   **📥 Data Gathering**: Extract information from command outputs (via Regex or JS) and reuse it in subsequent checks within the same assertion.
 -   **✅ Schema Validation**: Built-in JSON schema generation for IDE autocompletion.
+-   **🌐 Remote Capabilities**: [Integrate playbook and compliance result submissions remotely](#remote-features).
 -   **📜 JS Scripting & Logic**: Dynamic script generation and output evaluation using an embedded JavaScript engine ([Goja](https://github.com/dop251/goja)).
     -   **TS Support**: Write complex logic in separate `.js` or `.ts` files and "bake" them into a single portable playbook using the [builder tool](#builder-tool).
 
@@ -59,6 +60,14 @@ The playbook defines what to check, how to score results, and how to extract dat
 For a comprehensive guide on all available features—including **weighted scoring**, **embedded JavaScript logic**, **data gathering**, and **cross-platform handling**—see:
 
 👉 **[playbook.example.yaml](./playbook.example.yaml)**
+
+### Remote Features
+
+The probe can integrate with a central compliance hub:
+- Fetch playbooks from remote HTTPS URL
+- Submit signed results via HTTPS POST to central compliance hub
+
+👉 **[Remote Playbook & Submission Guide](./REMOTE_PLAYBOOK_SUBMISSION.md)**
 
 ## Builder Tool
 

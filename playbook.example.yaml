@@ -14,7 +14,6 @@ reportFrontmatter:
 #    - SCOPE: Strictly per-assertion. Data is NOT shared between different assertions.
 #    - LIFECYCLE: Persists across 'preCmds', 'cmds', and 'postCmds' within the same assertion.
 #    - USAGE: Can be used to drive dynamic logic in subsequent commands via JavaScript.
-
 sections:
   - title: "1. System Foundation"
     description: 
@@ -145,3 +144,15 @@ sections:
                 }
         passDescription: "Global profile syntax is clean."
         failDescription: "Syntax errors detected in the global profile!"
+
+# configure the report destination: folder (default, write to folder 'results') or https (send to remote server)
+reportDestination: folder
+# this field is optional. Configure if reportdestination is https
+reportDestinationHttps:
+  url: https://gway.lixus.id/campaignhub/api/log/complianceProbe02
+  # multipart (default) or json
+  format: json
+  signatureSecret: DontWorryBeHappy
+  # optional additional headers that will be included in the request
+  additionalHeaders:
+    X-Custom-Header: "Custom Value"

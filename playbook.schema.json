@@ -216,6 +216,39 @@
         "key"
       ]
     },
+    "ReportDestinationConfig": {
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "URL to post report content to"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "multipart",
+            "json"
+          ],
+          "description": "Format of the report (json|multipart)",
+          "default": "multipart"
+        },
+        "signatureSecret": {
+          "type": "string",
+          "description": "Secret for HMAC-SHA256 signature"
+        },
+        "additionalHeaders": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object",
+          "description": "Custom headers for the request"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "url"
+      ]
+    },
     "Section": {
       "properties": {
         "title": {
@@ -266,6 +299,19 @@
       "type": "array",
       "minItems": 1,
       "description": "List of sections in the report"
+    },
+    "reportDestination": {
+      "type": "string",
+      "enum": [
+        "folder",
+        "https"
+      ],
+      "description": "Destination for the report",
+      "default": "folder"
+    },
+    "reportDestinationHttps": {
+      "$ref": "#/$defs/ReportDestinationConfig",
+      "description": "Configuration for HTTPS report destination"
     }
   },
   "additionalProperties": false,
