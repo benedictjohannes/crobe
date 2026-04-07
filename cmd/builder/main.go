@@ -5,13 +5,12 @@ import (
 	"compliance-probe/playbook"
 	"compliance-probe/report"
 	"compliance-probe/internal/reportwriter"
+	"compliance-probe/internal/transpile"
 	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
-	"github.com/evanw/esbuild/pkg/api"
 	"gopkg.in/yaml.v3"
 )
 
@@ -152,7 +151,7 @@ func processAssertion(a *playbook.Assertion, baseDir string) {
 
 func processExec(e *playbook.Exec, baseDir string) {
 	if e.FuncFile != "" {
-		code, err := transpile(filepath.Join(baseDir, e.FuncFile))
+		code, err := transpile.Transpile(filepath.Join(baseDir, e.FuncFile))
 		if err != nil {
 			fmt.Printf("❌ Transpilation Error (%s): %v\n", e.FuncFile, err)
 			os.Exit(1)
@@ -162,7 +161,7 @@ func processExec(e *playbook.Exec, baseDir string) {
 	}
 	for i := range e.Gather {
 		if e.Gather[i].FuncFile != "" {
-			code, err := transpile(filepath.Join(baseDir, e.Gather[i].FuncFile))
+			code, err := transpile.Transpile(filepath.Join(baseDir, e.Gather[i].FuncFile))
 			if err != nil {
 				fmt.Printf("❌ Transpilation Error (%s): %v\n", e.Gather[i].FuncFile, err)
 				os.Exit(1)
@@ -175,7 +174,7 @@ func processExec(e *playbook.Exec, baseDir string) {
 
 func processEvalRule(r *playbook.EvaluationRule, baseDir string) {
 	if r.FuncFile != "" {
-		code, err := transpile(filepath.Join(baseDir, r.FuncFile))
+		code, err := transpile.Transpile(filepath.Join(baseDir, r.FuncFile))
 		if err != nil {
 			fmt.Printf("❌ Transpilation Error (%s): %v\n", r.FuncFile, err)
 			os.Exit(1)
@@ -185,44 +184,3 @@ func processEvalRule(r *playbook.EvaluationRule, baseDir string) {
 	}
 }
 
-func transpile(path string) (string, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return "", err
-	}
-
-	codeStr := string(data)
-	isModule := false
-	if (len(codeStr) > 7 && codeStr[:7] == "export ") ||
-		(len(codeStr) > 7 && codeStr[:7] == "import ") ||
-		strings.Contains(codeStr, "\nexport ") ||
-		strings.Contains(codeStr, "\nimport ") {
-		isModule = true
-	}
-
-	opts := api.TransformOptions{
-		Loader: api.LoaderTS,
-		Target: api.ES5,
-	}
-
-	if isModule {
-		opts.Format = api.FormatCommonJS
-		opts.MinifyWhitespace = true
-		opts.MinifyIdentifiers = true
-		opts.MinifySyntax = true
-	} else {
-		opts.Format = api.FormatDefault
-		opts.MinifyWhitespace = true
-	}
-
-	result := api.Transform(codeStr, opts)
-	if len(result.Errors) > 0 {
-		return "", fmt.Errorf("esbuild error: %v", result.Errors[0].Text)
-	}
-
-	if isModule {
-		return fmt.Sprintf("(function(){var exports={};var module={exports:exports};%s;return module.exports.default||module.exports})()", result.Code), nil
-	}
-
-	return strings.TrimSpace(string(result.Code)), nil
-}
