@@ -1,7 +1,7 @@
 package configsource
 
 import (
-	"compliance-probe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
 	"fmt"
 	"io"
 	"net/http"

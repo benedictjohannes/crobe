@@ -1,8 +1,8 @@
 package reportwriter
 
 import (
-	"compliance-probe/playbook"
-	"compliance-probe/report"
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/report"
 	"net/http"
 	"net/http/httptest"
 	"os"

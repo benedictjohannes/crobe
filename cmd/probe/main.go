@@ -1,10 +1,10 @@
 package main
 
 import (
-	"compliance-probe/internal/configsource"
-	"compliance-probe/internal/reportwriter"
-	"compliance-probe/playbook"
-	"compliance-probe/report"
+	"github.com/benedictjohannes/ComplianceProbe/internal/configsource"
+	"github.com/benedictjohannes/ComplianceProbe/internal/reportwriter"
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/report"
 	"flag"
 	"fmt"
 	"os"

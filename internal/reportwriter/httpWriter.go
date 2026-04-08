@@ -1,9 +1,9 @@
 package reportwriter
 
 import (
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/report"
 	"bytes"
-	"compliance-probe/playbook"
-	"compliance-probe/report"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"

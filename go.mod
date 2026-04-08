@@ -1,4 +1,4 @@
-module compliance-probe
+module github.com/benedictjohannes/ComplianceProbe
 
 go 1.24
 

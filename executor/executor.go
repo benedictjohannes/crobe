@@ -1,8 +1,8 @@
 package executor
 
 import (
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
 	"bytes"
-	"compliance-probe/playbook"
 	"fmt"
 	"os"
 	"os/exec"

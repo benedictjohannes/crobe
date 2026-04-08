@@ -1,7 +1,7 @@
 package executor
 
 import (
-	"compliance-probe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
 	"testing"
 )
 

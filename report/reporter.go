@@ -1,8 +1,8 @@
 package report
 
 import (
-	"compliance-probe/executor"
-	"compliance-probe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/executor"
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
 	"fmt"
 	"os"
 	"runtime"

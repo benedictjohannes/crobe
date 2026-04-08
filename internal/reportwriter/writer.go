@@ -1,8 +1,8 @@
 package reportwriter
 
 import (
-	"compliance-probe/playbook"
-	"compliance-probe/report"
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/report"
 	"encoding/json"
 	"fmt"
 	"os"

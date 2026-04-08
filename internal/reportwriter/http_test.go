@@ -1,8 +1,8 @@
 package reportwriter
 
 import (
-	"compliance-probe/playbook"
-	"compliance-probe/report"
+	"github.com/benedictjohannes/ComplianceProbe/playbook"
+	"github.com/benedictjohannes/ComplianceProbe/report"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
@@ -146,7 +146,7 @@ func TestWriteToHTTP_JSON(t *testing.T) {
 			if signature == "" {
 				t.Errorf("Missing signature for %s", name)
 			}
-			
+
 			expectedSig := calculateHMAC(b64Content, "json-secret")
 			if signature != expectedSig {
 				t.Errorf("Signature mismatch for %s. Got %s, want %s", name, signature, expectedSig)
