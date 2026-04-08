@@ -310,6 +310,10 @@
       "description": "Destination for the report",
       "default": "folder"
     },
+    "reportDestinationFolder": {
+      "type": "string",
+      "description": "Folder path for 'folder' report destination"
+    },
     "reportDestinationHttps": {
       "$ref": "#/$defs/ReportDestinationConfig",
       "description": "Configuration for HTTPS report destination"

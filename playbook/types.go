@@ -119,5 +119,6 @@ type ReportConfig struct {
 	ReportFrontmatter      map[string]interface{}   `yaml:"reportFrontmatter,omitempty" json:"reportFrontmatter,omitempty" jsonschema:"description=Custom YAML frontmatter for markdown reports"`
 	Sections               []Section                `yaml:"sections" json:"sections" jsonschema:"description=List of sections in the report,minItems=1"`
 	ReportDestination      ReportDestination        `yaml:"reportDestination,omitempty" json:"reportDestination,omitempty" jsonschema:"description=Destination for the report,default=folder,enum=folder,enum=https"`
+	ReportDestinationFolder string                   `yaml:"reportDestinationFolder,omitempty" json:"reportDestinationFolder,omitempty" jsonschema:"description=Folder path for 'folder' report destination"`
 	ReportDestinationHTTPS *ReportDestinationConfig `yaml:"reportDestinationHttps,omitempty" json:"reportDestinationHttps,omitempty" jsonschema:"description=Configuration for HTTPS report destination"`
 }

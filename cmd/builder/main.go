@@ -19,7 +19,10 @@ func main() {
 	preprocessFlag := flag.Bool("preprocess", false, "Preprocess a raw YAML into a baked playbook")
 	inputFlag := flag.String("input", "", "Input raw YAML file (for preprocess)")
 	outputFlag := flag.String("output", "playbook.yaml", "Output baked YAML file (for preprocess)")
+	folderFlag := flag.String("folder", "", "Folder to write reports to (default \"reports\")")
 	flag.Parse()
+
+	reportwriter.DefaultReportsDir = *folderFlag
 
 	if *schemaFlag {
 		schema, err := playbook.GenerateSchema()

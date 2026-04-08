@@ -1,6 +1,6 @@
 # ComplianceProbe 🛡️
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/benedictjohannes/ComplianceProbe/release.yml?style=flat-square)](https://github.com/benedictjohannes/ComplianceProbe/actions) [![License: MIT](https://img.shields.io/github/license/benedictjohannes/ComplianceProbe?color=yellow&style=flat-square)](https://github.com/benedictjohannes/ComplianceProbe/blob/master/LICENSE)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/benedictjohannes/ComplianceProbe/release.yml?style=flat-square)](https://github.com/benedictjohannes/ComplianceProbe/actions) [![Go Reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/benedictjohannes/ComplianceProbe) [![NPM Version](https://img.shields.io/npm/v/compliance-probe.svg?style=flat-square)](https://www.npmjs.com/package/compliance-probe) [![License: MIT](https://img.shields.io/github/license/benedictjohannes/ComplianceProbe?color=yellow&style=flat-square)](https://github.com/benedictjohannes/ComplianceProbe/blob/master/LICENSE)
 
 **ComplianceProbe** is a cross-platform security compliance reporting agent. It executes a series of automated checks defined in a YAML "playbook" to verify system integrity, security configurations, and hardware state.
 
@@ -52,7 +52,7 @@ Download the binary for your platform from the [releases](https://github.com/ben
     ```
 
 3.  **View results:**
-    Reports are saved to the `reports/` directory with a timestamped filename (e.g., `260206-033831.report.md`).
+    Reports are saved to the directory specified by the `reportDestinationFolder` in the playbook, or the `--folder` CLI flag (which takes precedence). Defaults to `reports/`. Filenames are timestamped (e.g., `260206-033831.report.md`).
 
 ## 🛠️ Configuration (playbook.yaml)
 

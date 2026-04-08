@@ -145,14 +145,17 @@ sections:
         passDescription: "Global profile syntax is clean."
         failDescription: "Syntax errors detected in the global profile!"
 
-# configure the report destination: folder (default, write to folder 'results') or https (send to remote server)
+# sets the report destination: folder (default, write to folder) or https (send to remote server)
 reportDestination: folder
-# this field is optional. Configure if reportdestination is https
+# if reportdestination is folder, this is the destination directory
+reportDestinationFolder: "reports/example-audit"
+# configure if reportdestination is https
 reportDestinationHttps:
-  url: https://gway.lixus.id/campaignhub/api/log/complianceProbe02
+  url: https://config.internal.company.com/compliance/submission
   # multipart (default) or json
   format: json
-  signatureSecret: DontWorryBeHappy
+  # if specified, will be used to generate a signature for the report files
+  signatureSecret: DontWorryBeJoyful
   # optional additional headers that will be included in the request
   additionalHeaders:
     X-Custom-Header: "Custom Value"

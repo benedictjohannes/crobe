@@ -11,7 +11,10 @@ import (
 )
 
 func main() {
+	folderFlag := flag.String("folder", "", "Folder to write reports to (default \"reports\")")
 	flag.Parse()
+
+	reportwriter.DefaultReportsDir = *folderFlag
 
 	configPath := configsource.GetConfigSource(flag.Arg(0))
 	if configPath == "" {
