@@ -21,6 +21,9 @@ jobs:
           node-version: 'latest'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Copy Schema
+        run: cp playbook.schema.json typescript-sdk/
+
       - name: Publish to NPM
         run: npm publish --access public --provenance
         working-directory: typescript-sdk

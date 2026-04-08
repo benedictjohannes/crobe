@@ -17,6 +17,7 @@
     "func.d.ts",
     "playbook.d.ts",
     "submission.d.ts",
+    "playbook.schema.json",
     "README.md",
     "LICENSE"
   ]

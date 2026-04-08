@@ -62,5 +62,23 @@ function handleSubmission(payload: RemoteSubmission) {
 }
 ```
 
+## 📝 JSON Schema Validation
+
+For the best developer experience when writing playbooks manually in YAML or JSON, you can use the JSON schema included in this package.
+
+Alternatively, you can use the schema from latest release `https://github.com/benedictjohannes/ComplianceProbe/releases/latest/download/playbook.schema.json`.
+
+
+### VS Code (YAML Extension)
+Add the following line to the top of your `playbook.yaml` file:
+
+```yaml
+# yaml-language-server: $schema=node_modules/compliance-probe/playbook.schema.json
+title: My Playbook
+...
+```
+
+This will enable auto-completion, hover documentation, and real-time validation for your playbook structure.
+
 ## ⚖️ License
 MIT
