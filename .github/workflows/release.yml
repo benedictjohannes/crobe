@@ -51,6 +51,7 @@ jobs:
             compliance-probe-builder-mac-arm
             playbook.schema.json
             playbook.d.ts
+            submission.d.ts
           generate_release_notes: true
           draft: false
           prerelease: false
@@ -76,5 +77,6 @@ jobs:
             compliance-probe-builder-mac-arm
             playbook.schema.json
             playbook.d.ts
+            submission.d.ts
           prerelease: true
           make_latest: false
