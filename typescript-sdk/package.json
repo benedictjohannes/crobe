@@ -1,0 +1,23 @@
+{
+  "name": "compliance-probe",
+  "version": "0.3.0",
+  "description": "TypeScript type definitions for ComplianceProbe playbooks and reports",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benedictjohannes/ComplianceProbe.git"
+  },
+  "author": "Benedict Johannes",
+  "license": "MIT",
+  "exports": {
+    "./func": "./func.d.ts",
+    "./playbook": "./playbook.d.ts",
+    "./submission": "./submission.d.ts"
+  },
+  "files": [
+    "func.d.ts",
+    "playbook.d.ts",
+    "submission.d.ts",
+    "README.md",
+    "LICENSE"
+  ]
+}

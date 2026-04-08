@@ -19,6 +19,7 @@ Whether you are auditing a desktop for security standards or monitoring server h
 -   **🌐 Remote Capabilities**: [Integrate playbook and compliance result submissions remotely](#remote-features).
 -   **📜 JS Scripting & Logic**: Dynamic script generation and output evaluation using an embedded JavaScript engine ([Goja](https://github.com/dop251/goja)).
     -   **TS Support**: Write complex logic in separate `.js` or `.ts` files and "bake" them into a single portable playbook using the [builder tool](#builder-tool).
+    -   **Type Definitions**: The [TypeScript definitions](./typescript-sdk) for playbook development and report consumption are available (via `npm install compliance-probe`).
 
 ## 🎯 Use Cases
 
@@ -67,7 +68,7 @@ The probe can integrate with a central compliance hub:
 - Fetch playbooks from remote HTTPS URL
 - Submit signed results via HTTPS POST to central compliance hub
 
-👉 **[Remote Playbook & Submission Guide](./REMOTE_PLAYBOOK_SUBMISSION.md)**
+👉 **[Remote Playbook & Submission Guide](./docs/RemotePlaybookSubmission.md)**
 
 ## Builder Tool
 
@@ -78,7 +79,7 @@ The **Builder** (`compliance-probe-builder`) is designed for compliance designer
 
 For a detailed guide on using **TypeScript**, external scripts, and the preprocessing pipeline, see:
 
-👉 **[Playbook Development Guide](./PLAYBOOK_DEVELOPMENT.md)**
+👉 **[Playbook Development Guide](./docs/PlaybookDevelopment.md)**
 
 ## 🏗️ Development and Building
 

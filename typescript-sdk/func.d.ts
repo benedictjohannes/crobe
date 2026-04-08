@@ -1,7 +1,6 @@
 /**
- * ComplianceProbe Global Types for Playbook Development
+ * Context within an assertion
  */
-
 export interface AssertionContext {
   [key: string]: string;
 }
