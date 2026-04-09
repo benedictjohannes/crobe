@@ -5,7 +5,7 @@ BINARY_NAME=crobe
 LDFLAGS=-s -w
 BUILD_FLAGS=-trimpath -ldflags="$(LDFLAGS)"
 
-.PHONY: help schema build build-linux build-windows build-mac-intel build-mac-arm build-builder build-builder-linux build-builder-windows build-builder-mac-intel build-builder-mac-arm test test-coverage test-coverage-report clean
+.PHONY: help schema build build-linux build-windows build-mac-intel build-mac-arm build-builder build-builder-linux build-builder-windows build-builder-mac-intel build-builder-mac-arm test test-coverage test-coverage-report test-e2e clean
 
 ## help: Show this help message
 help:
@@ -64,7 +64,7 @@ test-coverage-report: ## Generate coverage.html and coverage.json for CI
 	elif [ "$$IS_YELLOW" = "1" ]; then COLOR="yellow"; fi; \
 	echo "{\"schemaVersion\": 1, \"label\": \"coverage\", \"message\": \"$$PERCENTAGE%\", \"color\": \"$$COLOR\"}" > coverage.json
 
-test-builder: ## Verify builder transpilation and execution using built binaries
+test-e2e: ## Verify transpilation and running playbooks with compiled binaries
 	@echo "Verifying builder with built binaries..."
 	# 1. Preprocess raw playbook to baked version
 	./$(BINARY_NAME)-builder-linux --preprocess --input test-e2e/test.playbook.raw.yaml --output test-e2e/test.playbook.baked.yaml
@@ -74,7 +74,7 @@ test-builder: ## Verify builder transpilation and execution using built binaries
 	./$(BINARY_NAME)-builder-linux test-e2e/test.playbook.raw.yaml
 	# 4. Deep Audit of generated reports and file persistence
 	./$(BINARY_NAME)-linux test-e2e/test.playbook.reportevaluate.yaml
-	@echo "Builder E2E verification passed!"
+	@echo "✅ E2E verification passed"
 
 
 ## clean: Remove all generated binaries

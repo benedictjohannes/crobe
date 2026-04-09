@@ -33,8 +33,8 @@ jobs:
           make build
           make build-builder
 
-      - name: Run E2E Builder Tests
-        run: make test-builder
+      - name: Run E2E Tests
+        run: make test-e2e
 
       - name: Upload E2E Artifacts
         if: always()
