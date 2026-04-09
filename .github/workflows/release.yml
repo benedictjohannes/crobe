@@ -33,6 +33,15 @@ jobs:
       - name: Run E2E Builder Tests
         run: make test-builder
 
+      - name: Upload E2E Artifacts
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: e2e-artifacts-${{ github.sha }}
+          path: |
+            reports/
+            test-e2e/*.baked.yaml
+
       - name: Generate Schema
         run: make schema
 
