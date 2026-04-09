@@ -16,14 +16,22 @@ import (
 )
 
 func main() {
-	schemaFlag := flag.Bool("schema", false, "Output the configuration JSON schema and exit")
-	preprocessFlag := flag.Bool("preprocess", false, "Preprocess a raw YAML into a baked playbook")
-	inputFlag := flag.String("input", "", "Input raw YAML file (for preprocess)")
-	outputFlag := flag.String("output", "playbook.yaml", "Output baked YAML file (for preprocess)")
-	folderFlag := flag.String("folder", "", "Folder to write reports to (default \"reports\")")
+	os.Exit(run(os.Args[1:]))
+}
+
+func run(args []string) int {
+	flags := flag.NewFlagSet("crobe-builder", flag.ContinueOnError)
+	schemaFlag := flags.Bool("schema", false, "Output the configuration JSON schema and exit")
+	preprocessFlag := flags.Bool("preprocess", false, "Preprocess a raw YAML into a baked playbook")
+	inputFlag := flags.String("input", "", "Input raw YAML file (for preprocess)")
+	outputFlag := flags.String("output", "playbook.yaml", "Output baked YAML file (for preprocess)")
+	folderFlag := flags.String("folder", "", "Folder to write reports to (default \"reports\")")
 	var headersFlags headerflags.HeaderFlags
-	flag.Var(&headersFlags, "H", "Custom header for remote playbook fetching (eg: 'Authorization: Bearer <TOKEN>'). Specify multiple times for each header you want to add.")
-	flag.Parse()
+	flags.Var(&headersFlags, "H", "Custom header for remote playbook fetching (eg: 'Authorization: Bearer <TOKEN>'). Specify multiple times for each header you want to add.")
+
+	if err := flags.Parse(args); err != nil {
+		return 1
+	}
 
 	headers := headersFlags.ToMap()
 	reportwriter.DefaultReportsDir = *folderFlag
@@ -32,64 +40,63 @@ func main() {
 		schema, err := playbook.GenerateSchema()
 		if err != nil {
 			fmt.Printf("❌ Failed to generate schema: %v\n", err)
-			os.Exit(1)
+			return 1
 		}
 		fmt.Println(schema)
-		return
+		return 0
 	}
 
 	if *preprocessFlag {
 		if *inputFlag == "" {
 			fmt.Println("❌ Error: --input is required for --preprocess")
-			os.Exit(1)
+			return 1
 		}
-		runPreprocess(*inputFlag, *outputFlag)
-		return
+		return runPreprocess(*inputFlag, *outputFlag)
 	}
 
 	// Default: Run Agent Report
-	configPath := flag.Arg(0)
+	configPath := flags.Arg(0)
 	if configPath == "" {
 		fmt.Println("❌ Error: No playbook provided. Use 'crobe [path/to/playbook.yaml]'")
-		os.Exit(1)
+		return 1
 	}
 
 	config, _, err := configsource.LoadConfig(configPath, headers)
 	if err != nil {
 		fmt.Printf("❌ Failed to load playbook %s: %v\n", configPath, err)
-		os.Exit(1)
+		return 1
 	}
 
 	// Validate (builder allows funcFile)
 	if err := playbook.ValidateConfig(*config, false); err != nil {
 		fmt.Printf("❌ Validation Error: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 
 	// Transpile in-memory for direct run
 	if err := transpile.Preprocess(config, filepath.Dir(configPath)); err != nil {
 		fmt.Printf("❌ Preprocessing Error: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 
 	trace := director.Run(*config)
 	result := report.GenerateReport(trace)
 	if err := reportwriter.DispatchReport(config, result); err != nil {
 		fmt.Printf("❌ Reporting Error: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 
 	if result.Structured.Stats.Failed > 0 {
-		os.Exit(1)
+		return 1
 	}
+
+	return 0
 }
-
-// Preprocess Logic
-
-func runPreprocess(inputPath string, outputPath string) {
+func runPreprocess(inputPath string, outputPath string) int {
 	if err := transpile.BakeFile(inputPath, outputPath); err != nil {
 		fmt.Printf("❌ Preprocessing Failed: %v\n", err)
-		os.Exit(1)
+		return 1
 	}
 	fmt.Printf("🚀 Preprocessing Complete! Baked playbook saved to: %s\n", outputPath)
+	return 0
 }
