@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/benedictjohannes/crobe/director"
 	"github.com/benedictjohannes/crobe/internal/configsource"
 	"github.com/benedictjohannes/crobe/internal/headerflags"
 	"github.com/benedictjohannes/crobe/internal/reportwriter"
@@ -71,7 +72,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	result := report.GenerateReport(*config)
+	trace := director.Run(*config)
+	result := report.GenerateReport(trace)
 	if err := reportwriter.DispatchReport(config, result); err != nil {
 		fmt.Printf("❌ Reporting Error: %v\n", err)
 		os.Exit(1)

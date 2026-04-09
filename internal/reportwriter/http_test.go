@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestWriteToHTTP(t *testing.T) {
@@ -70,7 +71,7 @@ func TestWriteToHTTP(t *testing.T) {
 			}
 		}
 
-		checkFile("report.json", "application/json", "{\n  \"timestamps\": {\n    \"start\": \"\",\n    \"end\": \"\"\n  },\n  \"username\": \"testuser\",\n  \"os\": \"\",\n  \"arch\": \"\",\n  \"assertions\": null,\n  \"stats\": {\n    \"passed\": 0,\n    \"failed\": 0\n  }\n}", true)
+		checkFile("report.json", "application/json", "{\n  \"timestamps\": {\n    \"start\": \"2026-04-10T12:00:00Z\",\n    \"end\": \"2026-04-10T12:00:10Z\"\n  },\n  \"username\": \"testuser\",\n  \"os\": \"\",\n  \"arch\": \"\",\n  \"assertions\": null,\n  \"stats\": {\n    \"passed\": 0,\n    \"failed\": 0\n  }\n}", true)
 		checkFile("report.md", "text/markdown", "# Test Markdown", true)
 		checkFile("report.log", "text/plain", "test log", true)
 
@@ -86,6 +87,13 @@ func TestWriteToHTTP(t *testing.T) {
 	// 2. Prepare test data
 	res := report.FinalResult{
 		Structured: report.FinalReport{
+			Timestamps: struct {
+				Start time.Time `json:"start"`
+				End   time.Time `json:"end"`
+			}{
+				Start: time.Date(2026, 4, 10, 12, 0, 0, 0, time.UTC),
+				End:   time.Date(2026, 4, 10, 12, 0, 10, 0, time.UTC),
+			},
 			Username: "testuser",
 		},
 		Markdown: "# Test Markdown",
