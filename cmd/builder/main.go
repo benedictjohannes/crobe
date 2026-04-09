@@ -75,6 +75,10 @@ func main() {
 		fmt.Printf("❌ Reporting Error: %v\n", err)
 		os.Exit(1)
 	}
+
+	if result.Structured.Stats.Failed > 0 {
+		os.Exit(1)
+	}
 }
 
 // Preprocess Logic
