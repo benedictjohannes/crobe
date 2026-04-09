@@ -13,7 +13,7 @@ func GenerateSchema() (string, error) {
 		ExpandedStruct: true,
 	}
 
-	s := reflector.Reflect(&ReportConfig{})
+	s := reflector.Reflect(&Playbook{})
 	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return "", fmt.Errorf("failed to generate schema: %v", err)

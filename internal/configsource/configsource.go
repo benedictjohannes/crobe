@@ -26,7 +26,7 @@ func GetConfigSource(path string) string {
 }
 
 // LoadConfig loads the playbook from either a local file or an HTTPS URL.
-func LoadConfig(path string) (*playbook.ReportConfig, []byte, error) {
+func LoadConfig(path string) (*playbook.Playbook, []byte, error) {
 	var data []byte
 	var contentType string
 	var err error
@@ -45,7 +45,7 @@ func LoadConfig(path string) (*playbook.ReportConfig, []byte, error) {
 		return nil, nil, err
 	}
 
-	var config playbook.ReportConfig
+	var config playbook.Playbook
 	isJson := strings.HasPrefix(strings.ToLower(contentType), "application/json") ||
 		strings.HasSuffix(strings.ToLower(path), ".json") && !isHttps
 

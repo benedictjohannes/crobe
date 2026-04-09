@@ -1,13 +1,14 @@
 package report
 
 import (
-	"github.com/benedictjohannes/crobe/executor"
-	"github.com/benedictjohannes/crobe/playbook"
 	"fmt"
 	"os"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/benedictjohannes/crobe/executor"
+	"github.com/benedictjohannes/crobe/playbook"
 
 	"gopkg.in/yaml.v3"
 )
@@ -52,7 +53,7 @@ type FinalResult struct {
 	Markdown   string
 }
 
-func GenerateReport(config playbook.ReportConfig) FinalResult {
+func GenerateReport(config playbook.Playbook) FinalResult {
 	now := time.Now()
 	var md strings.Builder
 	var log strings.Builder

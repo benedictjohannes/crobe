@@ -8,13 +8,13 @@ import (
 func TestValidateConfig(t *testing.T) {
 	tests := []struct {
 		name      string
-		config    ReportConfig
+		config    Playbook
 		isAgent   bool
 		wantError string
 	}{
 		{
 			name: "Valid Config",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -30,7 +30,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Missing Code",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -46,7 +46,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Duplicate Code",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -63,7 +63,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Agent Mode funcFile Error - PreCmd",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -84,7 +84,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Agent Mode funcFile Error - Cmd",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -105,7 +105,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Agent Mode funcFile Error - StdOutRule",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -126,7 +126,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Agent Mode funcFile Error - StdErrRule",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -147,7 +147,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Agent Mode funcFile Error - Gather",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -174,7 +174,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Agent Mode funcFile Error - PostCmd",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{
@@ -195,7 +195,7 @@ func TestValidateConfig(t *testing.T) {
 		},
 		{
 			name: "Valid Agent Config",
-			config: ReportConfig{
+			config: Playbook{
 				Title: "Test",
 				Sections: []Section{
 					{

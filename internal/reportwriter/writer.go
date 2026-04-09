@@ -8,7 +8,7 @@ import (
 )
 
 // DispatchReport decides where to send the report based on the configuration.
-func DispatchReport(config *playbook.ReportConfig, res report.FinalResult) error {
+func DispatchReport(config *playbook.Playbook, res report.FinalResult) error {
 	switch config.ReportDestination {
 	case playbook.ReportDestinationHTTPS:
 		if config.ReportDestinationHTTPS == nil {

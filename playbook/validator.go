@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func ValidateConfig(config ReportConfig, isAgent bool) error {
+func ValidateConfig(config Playbook, isAgent bool) error {
 	codes := make(map[string]bool)
 
 	for _, section := range config.Sections {

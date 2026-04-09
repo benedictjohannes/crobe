@@ -1,16 +1,17 @@
 package report
 
 import (
-	"github.com/benedictjohannes/crobe/executor"
-	"github.com/benedictjohannes/crobe/playbook"
 	"fmt"
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/benedictjohannes/crobe/executor"
+	"github.com/benedictjohannes/crobe/playbook"
 )
 
 func TestReporterScoring(t *testing.T) {
-	config := playbook.ReportConfig{
+	config := playbook.Playbook{
 		Title: "Test Report",
 		Sections: []playbook.Section{
 			{
@@ -75,7 +76,7 @@ func TestReporterScoring(t *testing.T) {
 }
 
 func TestExcludeFromReport(t *testing.T) {
-	config := playbook.ReportConfig{
+	config := playbook.Playbook{
 		Title: "Test Exclude",
 		Sections: []playbook.Section{
 			{
@@ -143,7 +144,7 @@ func TestExcludeFromReport(t *testing.T) {
 
 func TestGenerateReport_Advanced(t *testing.T) {
 	minScore := 1
-	config := playbook.ReportConfig{
+	config := playbook.Playbook{
 		Title: "Advanced Test",
 		ReportFrontmatter: map[string]interface{}{
 			"custom": "value",
@@ -213,7 +214,7 @@ func TestGenerateReport_Advanced(t *testing.T) {
 }
 
 func TestGenerateReport_ErrorCases(t *testing.T) {
-	config := playbook.ReportConfig{
+	config := playbook.Playbook{
 		Title: "Error Test",
 		Sections: []playbook.Section{
 			{
@@ -264,7 +265,7 @@ func TestGenerateReport_EnvUsage(t *testing.T) {
 	os.Setenv("USERNAME", "testuser")
 	defer os.Unsetenv("USERNAME")
 
-	config := playbook.ReportConfig{
+	config := playbook.Playbook{
 		Title: "Env Test",
 		Sections: []playbook.Section{
 			{
@@ -291,7 +292,7 @@ func TestGenerateReport_EnvUsage(t *testing.T) {
 }
 
 func TestGenerateReport_DefaultExitCode(t *testing.T) {
-	config := playbook.ReportConfig{
+	config := playbook.Playbook{
 		Title: "Default Exit Code",
 		Sections: []playbook.Section{
 			{

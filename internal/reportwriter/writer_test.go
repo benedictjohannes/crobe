@@ -1,14 +1,15 @@
 package reportwriter
 
 import (
-	"github.com/benedictjohannes/crobe/playbook"
-	"github.com/benedictjohannes/crobe/report"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/benedictjohannes/crobe/playbook"
+	"github.com/benedictjohannes/crobe/report"
 )
 
 func TestDispatchReport(t *testing.T) {
@@ -31,7 +32,7 @@ func TestDispatchReport(t *testing.T) {
 		DefaultReportsDir = tmpDir
 		defer func() { DefaultReportsDir = oldDir }()
 
-		config := &playbook.ReportConfig{
+		config := &playbook.Playbook{
 			ReportDestination: playbook.ReportDestinationFolder,
 		}
 		err = DispatchReport(config, res)
@@ -47,7 +48,7 @@ func TestDispatchReport(t *testing.T) {
 	})
 
 	t.Run("unknown destination", func(t *testing.T) {
-		config := &playbook.ReportConfig{
+		config := &playbook.Playbook{
 			ReportDestination: "somewhere-else",
 		}
 		err := DispatchReport(config, res)
@@ -57,7 +58,7 @@ func TestDispatchReport(t *testing.T) {
 	})
 
 	t.Run("https missing URL", func(t *testing.T) {
-		config := &playbook.ReportConfig{
+		config := &playbook.Playbook{
 			ReportDestination: playbook.ReportDestinationHTTPS,
 		}
 		err := DispatchReport(config, res)
@@ -72,7 +73,7 @@ func TestDispatchReport(t *testing.T) {
 		}))
 		defer server.Close()
 
-		config := &playbook.ReportConfig{
+		config := &playbook.Playbook{
 			ReportDestination: playbook.ReportDestinationHTTPS,
 			ReportDestinationHTTPS: &playbook.ReportDestinationConfig{
 				URL: server.URL,
