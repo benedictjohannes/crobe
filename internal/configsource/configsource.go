@@ -14,17 +14,6 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// GetConfigSource detects the config source from path or defaults to playbook.yaml if it exists.
-func GetConfigSource(path string) string {
-	if path != "" {
-		return path
-	}
-	if fileExists("playbook.yaml") {
-		return "playbook.yaml"
-	}
-	return ""
-}
-
 // LoadConfig loads the playbook from either a local file or an HTTPS URL.
 func LoadConfig(path string) (*playbook.Playbook, []byte, error) {
 	var data []byte
@@ -85,12 +74,4 @@ func fetchHttpsPlaybook(url string) ([]byte, string, error) {
 	}
 
 	return data, resp.Header.Get("Content-Type"), nil
-}
-
-func fileExists(path string) bool {
-	info, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return !info.IsDir()
 }

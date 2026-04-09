@@ -38,20 +38,14 @@ Download the binary for your platform from the [releases](https://github.com/ben
 -   `crobe-mac-arm`
 -   `crobe-mac-intel`
 
-## 🚀 Quick Start
+## 🚀 Quick Start: Run a local playbook
 
-1.  **Run with the default playbook:**
-    Ensure a `playbook.yaml` exists in the current directory and run the probe (replace with your platform binary):
-    ```bash
-    ./crobe
-    ```
-
-2.  **Run with a specific playbook:**
+1.  **Run with a playbook:**
     ```bash
     ./crobe my-security-audit.yaml
     ```
 
-3.  **View results:**
+2.  **View results:**
     Reports are saved to the directory specified by the `reportDestinationFolder` in the playbook, or the `--folder` CLI flag (which takes precedence). Defaults to `reports/`. Filenames are timestamped (e.g., `260206-033831.report.md`).
 
 ## 🛠️ Configuration (playbook.yaml)

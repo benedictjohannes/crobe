@@ -9,27 +9,6 @@ import (
 	"testing"
 )
 
-func TestGetConfigSource(t *testing.T) {
-	// 1. Explicit path
-	if GetConfigSource("test.yaml") != "test.yaml" {
-		t.Errorf("Expected test.yaml")
-	}
-
-	// 2. Default playbook.yaml
-	os.WriteFile("playbook.yaml", []byte("test"), 0644)
-	defer os.Remove("playbook.yaml")
-
-	if GetConfigSource("") != "playbook.yaml" {
-		t.Errorf("Expected playbook.yaml as default")
-	}
-
-	// 3. None
-	os.Remove("playbook.yaml")
-	if GetConfigSource("") != "" {
-		t.Errorf("Expected empty string when no playbook.yaml exists")
-	}
-}
-
 func TestLoadConfig_Insecure(t *testing.T) {
 	_, _, err := LoadConfig("http://example.com/playbook.yaml")
 	if err == nil || !strings.Contains(err.Error(), "insecure HTTP") {

@@ -1,15 +1,16 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/benedictjohannes/crobe/internal/configsource"
 	"github.com/benedictjohannes/crobe/internal/reportwriter"
 	"github.com/benedictjohannes/crobe/internal/transpile"
 	"github.com/benedictjohannes/crobe/playbook"
 	"github.com/benedictjohannes/crobe/report"
-	"flag"
-	"fmt"
-	"os"
-	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -44,7 +45,7 @@ func main() {
 	}
 
 	// Default: Run Agent Report
-	configPath := configsource.GetConfigSource(flag.Arg(0))
+	configPath := flag.Arg(0)
 	if configPath == "" {
 		fmt.Println("❌ Error: No playbook provided. Use 'crobe [path/to/playbook.yaml]'")
 		os.Exit(1)
