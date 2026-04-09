@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://github.com/benedictjohannes/crobe/releases/latest/download/playbook.schema.json
+# yaml-language-server: $schema=./playbook.schema.json
 title: "Advanced Compliance Playbook Example (Feature Showcase)"
 # Optional: this would be merged into the generated markdown report's YAML frontmatter.
 # Values here override defaults. Title and Date are added automatically if not specified.
@@ -57,7 +57,7 @@ sections:
                   regex: "(.+)"
             passScore: 0
           - exec:
-              # func in an exec block uses JS to generate a dynamic shell script.
+              # func in an exec block uses JS to generate a dynamic shell script. It takes precedence over script.
               func: |
                 ({ assertionContext }) => {
                   return "getent passwd " + assertionContext.current_user + " | cut -d: -f7"
@@ -89,6 +89,9 @@ sections:
                   regex: "=(.*)"
                   # excludeFromReport prevents this value from appearing in the JSON reports.
                   excludeFromReport: true
+                - key: "secret_key"
+                  # func takes precedence over regex.
+                  func: (stdout, stderr, assertionContext) => stdout.split("=")[1]?.trim()
             # exitCodeRules allow mapping specific exit codes to pass/fail/neutral scores.
             # the first match's result wins
             exitCodeRules:
@@ -125,10 +128,17 @@ sections:
                   if (os === 'windows') return "echo %USERPROFILE%";
                   return "echo unknown";
                 }
-              # shell can explicitly target 'bash', 'sh', or 'powershell'.
-              # defaults to bash (linux), powershell (windows)
-              # If not specified, the commands would be executed directly
+              # shell can explicitly target 'bash', 'sh', 'powershell', or other executors like python3, node, etc.
+              # defaults to 
+              #  - windows: pwsh (falls back to powershell if not found)
+              #  - mac: zsh
+              #  - linux and others: bash
+              # Note that for bash and powershell, set -o pipefail and $ErrorActionPreference = 'Stop' is added to catch execution errors.
+              # Specify to "!" to execute the script directly as cmd and args, without a shell.
               shell: "bash"
+              # Extension for the temporary script file (eg: sh, ps1, py, js). Optional. 
+              # If not specified, defaults to 'sh' for bash/sh/zsh, 'ps1' for powershell/pwsh, and empty for others.
+              scriptFileExtension: "sh"
             # stdOutRule allows evaluating the stdout and stderr for scoring.
             # If specified and returns -1 or 1, , stdOutRule takes precedence over exitCodeRules.
             stdOutRule:

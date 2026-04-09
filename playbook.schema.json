@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/benedictjohannes/crobe/playbook/report-config",
+  "$id": "https://github.com/benedictjohannes/crobe/playbook/playbook",
   "$defs": {
     "Assertion": {
       "properties": {
@@ -119,7 +119,7 @@
         },
         "func": {
           "type": "string",
-          "description": "JS function for evaluation. Signature: (stdout, stderr, assertionContext) =\u003e -1 | 0 | 1"
+          "description": "JS function for evaluation. Takes precedence over regex. Signature: (stdout, stderr, assertionContext) =\u003e -1 | 0 | 1"
         },
         "funcFile": {
           "type": "string",
@@ -133,15 +133,19 @@
       "properties": {
         "shell": {
           "type": "string",
-          "description": "Shell to use (eg: bash, powershell, sh)"
+          "description": "Shell/Interpreter to use (eg: bash, powershell, sh). Optional. Defaults: pwsh (windows, falls back to powershell if not found), zsh (mac), bash (linux and others). Note that for bash and powershell, set -o pipefail and $ErrorActionPreference = 'Stop' is added to catch execution errors. Non-shell interpreters like python3 or node are supported. Set to ! to directly execute the script as cmd and args, executed directly (eg: ls -lah)."
         },
         "script": {
           "type": "string",
           "description": "Script to execute"
         },
+        "scriptFileExtension": {
+          "type": "string",
+          "description": "Extension for the temporary script file (eg: sh, ps1, py, js). Optional. If not specified, defaults to 'sh' for bash/sh/zsh, 'ps1' for powershell/pwsh, and empty for others."
+        },
         "func": {
           "type": "string",
-          "description": "Embedded JS code. Signature: ({ assertionContext, env, os, arch, user, cwd }) =\u003e string"
+          "description": "Embedded JS code that returns the script to be executed. Takes precedence over script. Signature: ({ assertionContext, env, os, arch, user, cwd }) =\u003e string."
         },
         "funcFile": {
           "type": "string",
@@ -204,7 +208,7 @@
         },
         "func": {
           "type": "string",
-          "description": "JS function for extraction. Signature: (stdout, stderr, assertionContext) =\u003e string"
+          "description": "JS function for extraction. Takes precedence over regex. Signature: (stdout, stderr, assertionContext) =\u003e string"
         },
         "funcFile": {
           "type": "string",

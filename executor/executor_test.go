@@ -289,33 +289,67 @@ func TestEvaluateRule(t *testing.T) {
 
 func TestRunShell(t *testing.T) {
 	// Simple success
-	res := RunShell("echo hello", "")
+	res := RunShell("echo hello", "", "")
 	if !res.Success || res.Stdout != "hello" {
 		t.Errorf("RunShell(echo) = %+v; want Success: true, Stdout: hello", res)
 	}
 
 	// Failure
-	res = RunShell("ls non_existent_file_12345", "")
+	res = RunShell("ls non_existent_file_12345", "", "")
 	if res.Success || res.ExitCode == 0 {
 		t.Errorf("RunShell(ls fail) = %+v; want Success: false, ExitCode != 0", res)
 	}
 
-	// Specific shell
-	res = RunShell("echo hello", "sh")
-	if !res.Success || res.Stdout != "hello" {
-		t.Errorf("RunShell(sh) = %+v; want Success: true", res)
+	// Default shell (not sh or bash)
+	res = RunShell("echo hello world", "bash", "")
+	if !res.Success || res.Stdout != "hello world" {
+		t.Errorf("RunShell(bash) = %+v; want Success: true, Stdout: hello world", res)
 	}
 
-	// Default shell (not sh or bash)
-	res = RunShell("echo hello world", "bash") // wait bash IS a case
-	res = RunShell("echo hello world", "echo")
+	res = RunShell("echo hello world", "zsh", "")
+	if !res.Success || res.Stdout != "hello world" {
+		t.Errorf("RunShell(zsh) = %+v; want Success: true, Stdout: hello world", res)
+	}
+
+	// Test pipefail for bash/zsh
+	// In standard sh, this would succeed (pipefail disabled).
+	// In bash/zsh with our setup, it should fail.
+	res = RunShell("non_existent_command | echo hi", "bash", "")
+	if res.Success {
+		t.Errorf("RunShell(bash pipefail) should have failed, but succeeded: %+v", res)
+	}
+	res = RunShell("non_existent_command | echo hi", "zsh", "")
+	if res.Success {
+		t.Errorf("RunShell(zsh pipefail) should have failed, but succeeded: %+v", res)
+	}
+
+	// Test full path shell
+	res = RunShell("echo full path", "/bin/bash", "")
+	if !res.Success || res.Stdout != "full path" {
+		t.Errorf("RunShell(/bin/bash) = %+v; want Success: true", res)
+	}
+
+	res = RunShell("echo hello world", "echo", "")
 	if !res.Success {
 		t.Errorf("RunShell(default) = %+v; want Success: true", res)
 	}
 
 	// Non-existent shell (should trigger exit code -1)
-	res = RunShell("echo hello", "/non/existent/shell/cp")
+	res = RunShell("echo hello", "/non/existent/shell/cp", "")
 	if res.Success || res.ExitCode != -1 {
 		t.Errorf("RunShell(missing) = %+v; want Success: false, ExitCode: -1", res)
+	}
+
+	// Test case for "!" (direct execution)
+	res = RunShell("echo direct", "!", "")
+	if !res.Success || res.Stdout != "direct" {
+		t.Errorf("RunShell(!) = %+v; want Success: true, Stdout: direct", res)
+	}
+
+	// Test case for custom interpreter logic (e.g., shell "sh -c")
+	// Note: using 'sh' because it's available. In practice this could be 'python -u'
+	res = RunShell("echo hello", "sh", ".sh")
+	if !res.Success || res.Stdout != "hello" {
+		t.Errorf("RunShell(sh with ext) = %+v; want Success: true", res)
 	}
 }

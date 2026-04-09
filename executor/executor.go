@@ -1,7 +1,6 @@
 package executor
 
 import (
-	"github.com/benedictjohannes/crobe/playbook"
 	"bytes"
 	"fmt"
 	"os"
@@ -11,6 +10,8 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/benedictjohannes/crobe/playbook"
 
 	"github.com/acarl005/stripansi"
 	"github.com/dop251/goja"
@@ -45,7 +46,7 @@ func RunExec(e *playbook.Exec, context map[string]interface{}) (ExecutionResult,
 		return ExecutionResult{Success: true}, nil
 	}
 
-	res := RunShell(script, e.Shell)
+	res := RunShell(script, e.Shell, e.ScriptFileExtension)
 
 	// Handle Gathering
 	for _, g := range e.Gather {
@@ -59,7 +60,7 @@ func RunExec(e *playbook.Exec, context map[string]interface{}) (ExecutionResult,
 	return res, nil
 }
 
-func RunShell(command string, shell string) ExecutionResult {
+func RunShell(command string, shell string, extension string) ExecutionResult {
 	var name string
 	var args []string
 
@@ -67,37 +68,77 @@ func RunShell(command string, shell string) ExecutionResult {
 	var tmpFile string
 
 	if shell == "" {
-		if runtime.GOOS == "windows" {
-			shell = "powershell"
-		} else {
+		switch runtime.GOOS {
+		case "windows":
+			if _, err := exec.LookPath("pwsh"); err == nil {
+				shell = "pwsh"
+			} else {
+				shell = "powershell"
+			}
+		case "darwin":
+			shell = "zsh"
+		default:
 			shell = "bash"
 		}
 	}
 
+	if extension != "" && !strings.HasPrefix(extension, ".") {
+		extension = "." + extension
+	}
+
 	switch shell {
-	case "powershell":
-		name = "powershell"
-		tmpFile = filepath.Join(tmpDir, fmt.Sprintf("cp_%d.ps1", time.Now().UnixNano()))
-		os.WriteFile(tmpFile, []byte(command), 0644)
-		args = []string{"-ExecutionPolicy", "Bypass", "-File", tmpFile}
-	case "bash", "sh":
+	case "!":
+		// Direct execution: command is treated as name + args
+		segments := strings.Fields(command)
+		if len(segments) == 0 {
+			return ExecutionResult{Success: true}
+		}
+		name = segments[0]
+		args = segments[1:]
+	case "powershell", "pwsh":
 		name = shell
-		tmpFile = filepath.Join(tmpDir, fmt.Sprintf("cp_%d.sh", time.Now().UnixNano()))
+		ext := ".ps1"
+		if extension != "" {
+			ext = extension
+		}
+		tmpFile = filepath.Join(tmpDir, fmt.Sprintf("cp_%d%s", time.Now().UnixNano(), ext))
+		script := fmt.Sprintf("$ErrorActionPreference = 'Stop'\n%s\n", command)
+		os.WriteFile(tmpFile, []byte(script), 0644)
+		args = []string{"-ExecutionPolicy", "Bypass", "-File", tmpFile}
+	case "bash", "sh", "zsh":
+		name = shell
+		base := filepath.Base(shell)
+		
+		ext := ".sh"
+		if extension != "" {
+			ext = extension
+		} else if base == "zsh" {
+			ext = ".zsh"
+		}
+		
+		tmpFile = filepath.Join(tmpDir, fmt.Sprintf("cp_%d%s", time.Now().UnixNano(), ext))
 		var script string
-		if shell == "bash" {
-			script = fmt.Sprintf("#!/bin/bash\nset -o pipefail\n%s\n", command)
+		if base == "bash" || base == "zsh" {
+			script = fmt.Sprintf("set -o pipefail\n%s\n", command)
 		} else {
-			script = fmt.Sprintf("#!/bin/sh\n%s\n", command)
+			script = fmt.Sprintf("%s\n", command)
 		}
 		os.WriteFile(tmpFile, []byte(script), 0755)
 		args = []string{tmpFile}
 	default:
-		// Try to run it directly if it's just a command name in PATH
-		name = shell
-		args = []string{"-c", command}
+		// Generic shell/interpreter: shell string is split into command + initial args,
+		// and the script is appended as a temporary file.
+		shellSegments := strings.Fields(shell)
+		name = shellSegments[0]
+		tmpFile = filepath.Join(tmpDir, fmt.Sprintf("cp_%d%s", time.Now().UnixNano(), extension))
+		os.WriteFile(tmpFile, []byte(command), 0755)
+
+		args = append(shellSegments[1:], tmpFile)
 	}
 
-	defer os.Remove(tmpFile)
+	if tmpFile != "" {
+		defer os.Remove(tmpFile)
+	}
 
 	cmd := exec.Command(name, args...)
 	cmd.Env = append(os.Environ(), "TERM=dumb", "NO_COLOR=1", "LANG=en_US.UTF-8")

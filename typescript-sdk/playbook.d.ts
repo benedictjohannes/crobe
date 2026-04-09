@@ -112,6 +112,13 @@ export interface Cmd {
 export interface Exec {
   /**
    * Shell to use (e.g., 'bash', 'powershell', 'sh').
+   * Defaults: 
+   * - windows: pwsh (falls back to powershell if not found)
+   * - mac: zsh
+   * - linux and others: bash
+   * Note that for bash and powershell, set -o pipefail and 
+   * $ErrorActionPreference = 'Stop' is added to catch execution errors.
+   * Specify to "!" to execute the script directly as cmd and args, without a shell.
    */
   shell?: string;
 
@@ -119,9 +126,15 @@ export interface Exec {
    * Script to execute in the chosen shell.
    */
   script?: string;
+  /**
+   * Extension for the temporary script file (eg: py\\, js). 
+   * If not specified, defaults to 'sh' for bash/sh/zsh, 'ps1' for powershell/pwsh, and empty for others.
+   */
+  scriptFileExtension?: string;
 
   /**
    * Embedded JS code for dynamic execution logic.
+   * When specified, takes precedence over script.
    * Signature: ({ assertionContext, env, os, arch, user, cwd }) => string
    */
   func?: string;
@@ -160,6 +173,7 @@ export interface EvaluationRule {
 
   /**
    * JS function for custom evaluation.
+   * When specified, takes precedence over regex.
    * Signature: (stdout, stderr, assertionContext) => -1 | 0 | 1
    */
   func?: string;
@@ -198,6 +212,7 @@ export interface GatherSpec {
 
   /**
    * JS function for custom extraction logic.
+   * When specified, takes precedence over regex.
    * Signature: (stdout, stderr, assertionContext) => string
    */
   func?: string;

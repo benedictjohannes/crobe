@@ -43,18 +43,19 @@ func (c Cmd) GetFailScore() int {
 }
 
 type Exec struct {
-	Shell             string       `yaml:"shell,omitempty" json:"shell,omitempty" jsonschema:"description=Shell to use (eg: bash\\, powershell\\, sh)"`
-	Script            string       `yaml:"script,omitempty" json:"script,omitempty" jsonschema:"description=Script to execute"`
-	Func              string       `yaml:"func,omitempty" json:"func,omitempty" jsonschema:"description=Embedded JS code. Signature: ({ assertionContext\\, env\\, os\\, arch\\, user\\, cwd }) => string"`
-	FuncFile          string       `yaml:"funcFile,omitempty" json:"funcFile,omitempty" jsonschema:"description=Path to JS/TS file. BUILDER ONLY: using this in real playbook will cause error."`
-	Gather            []GatherSpec `yaml:"gather,omitempty" json:"gather,omitempty" jsonschema:"description=Data extraction specs"`
-	ExcludeFromReport bool         `yaml:"excludeFromReport,omitempty" json:"excludeFromReport,omitempty" jsonschema:"description=Hide stdout/stderr results from log and markdown report"`
+	Shell               string       `yaml:"shell,omitempty" json:"shell,omitempty" jsonschema:"description=Shell/Interpreter to use (eg: bash\\, powershell\\, sh). Optional. Defaults: pwsh (windows\\, falls back to powershell if not found)\\, zsh (mac)\\, bash (linux and others). Note that for bash and powershell\\, set -o pipefail and $ErrorActionPreference = 'Stop' is added to catch execution errors. Non-shell interpreters like python3 or node are supported. Set to ! to directly execute the script as cmd and args\\, executed directly (eg: ls -lah)."`
+	Script              string       `yaml:"script,omitempty" json:"script,omitempty" jsonschema:"description=Script to execute."`
+	ScriptFileExtension string       `yaml:"scriptFileExtension,omitempty" json:"scriptFileExtension,omitempty" jsonschema:"description=Extension for the temporary script file (eg: sh\\, ps1\\, py\\, js). Optional. If not specified\\, defaults to 'sh' for bash/sh/zsh\\, 'ps1' for powershell/pwsh\\, and empty for others."`
+	Func                string       `yaml:"func,omitempty" json:"func,omitempty" jsonschema:"description=Embedded JS code that returns the script to be executed. Takes precedence over script. Signature: ({ assertionContext\\, env\\, os\\, arch\\, user\\, cwd }) => string."`
+	FuncFile            string       `yaml:"funcFile,omitempty" json:"funcFile,omitempty" jsonschema:"description=Path to JS/TS file. BUILDER ONLY: using this in real playbook will cause error."`
+	Gather              []GatherSpec `yaml:"gather,omitempty" json:"gather,omitempty" jsonschema:"description=Data extraction specs"`
+	ExcludeFromReport   bool         `yaml:"excludeFromReport,omitempty" json:"excludeFromReport,omitempty" jsonschema:"description=Hide stdout/stderr results from log and markdown report"`
 }
 
 type EvaluationRule struct {
 	Regex         string `yaml:"regex,omitempty" json:"regex,omitempty" jsonschema:"description=Regex to match against output"`
 	IncludeStdErr *bool  `yaml:"includeStdErr,omitempty" json:"includeStdErr,omitempty" jsonschema:"description=Include stderr in regex evaluation,default=false"`
-	Func          string `yaml:"func,omitempty" json:"func,omitempty" jsonschema:"description=JS function for evaluation. Signature: (stdout\\, stderr\\, assertionContext) => -1 | 0 | 1"`
+	Func          string `yaml:"func,omitempty" json:"func,omitempty" jsonschema:"description=JS function for evaluation. Takes precedence over regex. Signature: (stdout\\, stderr\\, assertionContext) => -1 | 0 | 1"`
 	FuncFile      string `yaml:"funcFile,omitempty" json:"funcFile,omitempty" jsonschema:"description=Path to JS/TS file. BUILDER ONLY: using this in real playbook will cause error."`
 }
 
@@ -70,7 +71,7 @@ type GatherSpec struct {
 	ExcludeFromReport bool   `yaml:"excludeFromReport,omitempty" json:"excludeFromReport,omitempty" jsonschema:"description=Hide key from JSON report"`
 	Regex             string `yaml:"regex,omitempty" json:"regex,omitempty" jsonschema:"description=Regex to extract data"`
 	IncludeStdErr     *bool  `yaml:"includeStdErr,omitempty" json:"includeStdErr,omitempty" jsonschema:"description=Include stderr in regex evaluation,default=false"`
-	Func              string `yaml:"func,omitempty" json:"func,omitempty" jsonschema:"description=JS function for extraction. Signature: (stdout\\, stderr\\, assertionContext) => string"`
+	Func              string `yaml:"func,omitempty" json:"func,omitempty" jsonschema:"description=JS function for extraction. Takes precedence over regex. Signature: (stdout\\, stderr\\, assertionContext) => string"`
 	FuncFile          string `yaml:"funcFile,omitempty" json:"funcFile,omitempty" jsonschema:"description=Path to JS/TS file. BUILDER ONLY: using this in real playbook will cause error."`
 }
 
