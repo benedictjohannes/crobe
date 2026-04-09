@@ -46,7 +46,8 @@ assertions:
 
 ### 🛡️ Sandbox Restrictions
 - **No Node.js APIs**: You cannot use `fs`, `path`, `http`, etc.
-- **No External Imports**: All logic must be self-contained. You can use `import type` for type safety, but runtime code must be in the file or bundled.
+- **No External Imports**: All logic must be self-contained. You can use `import type` for type safety, but runtime code must be in the file. 
+    - *Rationale*: The JS engine does not implement `require()` or `module` resolution at runtime. 
 - **Side-Effect Free**: The logic should purely process inputs and return strings or numbers.
 
 ---
